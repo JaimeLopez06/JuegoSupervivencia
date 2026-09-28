@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#11151c">
+	<meta name="description" content="Última Luz: una supervivencia arcade por fases. ¿Cuánto resistirás en la estación?">
+	<title>Última Luz | Supervivencia arcade</title>
+	<link rel="stylesheet" href="styles.css">
+	<script src="game.js" defer></script>
+</head>
+<body>
+	<section class="intro-screen" id="intro-screen" aria-labelledby="intro-title" hidden>
+		<div class="intro-shell">
+			<header class="intro-header">
+				<a class="wordmark" href="#inicio" aria-label="Última Luz">
+					<span class="wordmark-mark" aria-hidden="true"></span>
+					<span>ÚLTIMA <strong>LUZ</strong></span>
+				</a>
+				<p>ESTACIÓN ORBITAL <span>//</span> SECTOR 09</p>
+			</header>
+			<div class="intro-layout">
+				<section class="intro-story">
+					<p class="intro-kicker">REGISTRO DE EMERGENCIA // 09.04</p>
+					<h1 id="intro-title">ÚLTIMA<br><span>LUZ</span></h1>
+					<p class="intro-summary">La estación ha caído y la señal se apaga. Resiste las oleadas, recupera la transmisión y encuentra una salida.</p>
+					<div class="intro-stats" aria-label="Duración de la misión">
+						<div><strong>05</strong><span>FASES</span></div>
+						<div><strong>32<span>s</span></strong><span>POR FASE</span></div>
+						<div><strong>03</strong><span>UNIDADES</span></div>
+					</div>
+					<button class="primary-button intro-start" id="start-button" type="button">INICIAR MISIÓN <span class="button-arrow" aria-hidden="true">→</span></button>
+				</section>
+				<aside class="intro-brief" aria-labelledby="brief-title">
+					<div class="intro-brief-heading"><span id="brief-title">PROTOCOLO DE SUPERVIVENCIA</span><span>01 / 03</span></div>
+					<div class="intro-objective">
+						<span class="intro-label">OBJETIVO</span>
+						<p>Sobrevive cinco fases. Elige una mejora entre fases y recoge las cargas que dejan tus enemigos.</p>
+					</div>
+					<div class="intro-controls">
+						<section class="intro-control-group" aria-label="Controles de ordenador">
+							<h2>ORDENADOR</h2>
+							<div class="control-row"><span>Mover</span><span class="control-keys"><kbd>WASD</kbd><span>o flechas</span></span></div>
+							<div class="control-row"><span>Disparar</span><span class="control-keys"><kbd>F</kbd><span>o mantener clic</span></span></div>
+							<div class="control-row"><span>Impulso</span><kbd>ESPACIO</kbd></div>
+						</section>
+						<section class="intro-control-group" aria-label="Controles de móvil">
+							<h2>MÓVIL</h2>
+							<div class="control-row"><span>Mover</span><span class="control-value">Joystick</span></div>
+							<div class="control-row"><span>Disparar</span><span class="control-value">Mantén DISPARO</span></div>
+							<div class="control-row"><span>Impulso</span><span class="control-value">Botón IMPULSO</span></div>
+						</section>
+					</div>
+					<p class="intro-warning"><span aria-hidden="true">!</span> Desde la fase 2 aparecen tiradores. No dejes de moverte.</p>
+				</aside>
+			</div>
+			<footer class="intro-footer"><span>RESPIRA. MUÉVETE. SOBREVIVE.</span><span>FIN DE TRANSMISIÓN // V. 2.4.09</span></footer>
+		</div>
+	</section>
+	<main class="game-shell">
+		<header class="topbar">
+			<a class="wordmark" href="#inicio" aria-label="Última Luz, inicio">
+				<span class="wordmark-mark" aria-hidden="true"></span>
+				<span>ÚLTIMA <strong>LUZ</strong></span>
+			</a>
+			<p class="edition">ESTACIÓN ORBITAL <span>//</span> SECTOR 09</p>
+			<div class="top-actions">
+				<button class="icon-button" id="sound-button" type="button" aria-label="Activar sonido" aria-pressed="false" title="Activar sonido">
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h4l5 4V6l-5 4H4Z"></path><path d="M17 9a5 5 0 0 1 0 6M19.5 6.5a9 9 0 0 1 0 11"></path></svg>
+				</button>
+				<button class="icon-button" id="pause-button" type="button" aria-label="Pausar partida" title="Pausar partida" disabled>
+					<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5v14M15 5v14"></path></svg>
+				</button>
+			</div>
+		</header>
+
+		<section class="game-layout" aria-label="Juego Última Luz">
+			<div class="arena-column">
+				<div class="arena-frame">
+					<canvas id="game-canvas" width="960" height="600" aria-label="Arena de juego. Muévete y sobrevive a las criaturas." role="img"></canvas>
+					<div class="scanlines" aria-hidden="true"></div>
+					<div class="game-overlay" id="game-overlay" aria-live="polite">
+						<div class="overlay-content" id="overlay-content"></div>
+					</div>
+					<div class="mobile-controls" id="mobile-controls" aria-label="Controles táctiles">
+						<div class="joystick" id="joystick" aria-label="Joystick de movimiento" role="application">
+							<span class="joystick-ring"></span><span class="joystick-knob" id="joystick-knob"></span>
+						</div>
+						<button class="fire-button" id="fire-button" type="button" aria-label="Disparar" title="Mantén para disparar">
+							<span aria-hidden="true">✳</span><small>DISPARO</small>
+						</button>
+						<button class="dash-button" id="dash-button" type="button" aria-label="Impulso">
+							<span aria-hidden="true">»</span><small>IMPULSO</small>
+						</button>
+					</div>
+				</div>
+				<div class="arena-caption">
+					<span><i class="status-dot"></i> SISTEMA <strong id="system-status">EN ESPERA</strong></span>
+					<span class="caption-right">RÉCORD LOCAL <strong id="best-score">000000</strong></span>
+				</div>
+			</div>
+
+			<aside class="mission-panel" aria-label="Estado de misión">
+				<div class="panel-heading"><span>ESTADO DE MISIÓN</span><span class="panel-index">01 / 05</span></div>
+				<div class="phase-block">
+					<span class="eyebrow">FASE ACTUAL</span>
+					<div class="phase-number"><span id="level-value">01</span><small> / 05</small></div>
+					<p id="phase-name">Despertar</p>
+					<div class="phase-track" aria-label="Progreso de fase"><span id="phase-progress"></span></div>
+					<div class="phase-meta"><span>TIEMPO RESTANTE</span><strong id="timer-value">00:32</strong></div>
+				</div>
+				<div class="panel-rule"></div>
+				<div class="vitals-block">
+					<div class="block-label"><span>INTEGRIDAD DEL TRAJE</span><strong id="health-value">03 / 03</strong></div>
+					<div class="health-pips" id="health-pips" aria-label="3 vidas restantes">
+						<span></span><span></span><span></span>
+					</div>
+				</div>
+				<div class="panel-rule"></div>
+				<div class="score-block">
+					<span class="eyebrow">SEÑAL RECUPERADA</span>
+					<strong id="score-value">000000</strong>
+				</div>
+				<div class="mission-note">
+					<span class="note-symbol" aria-hidden="true">!</span>
+					<p>La estación está comprometida. Sobrevive y recupera la señal.</p>
+				</div>
+				<div class="panel-footer"><span>PROTOCOLO DE EMERGENCIA</span><span>V. 2.4.09</span></div>
+			</aside>
+		</section>
+
+		<footer class="bottom-bar">
+			<div class="key-hints"><span class="hint-label">MOVER</span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd><span class="or-label">O</span><span class="arrows" aria-label="Flechas">↑ ↓ ← →</span></div>
+			<span class="desktop-aim"><span class="fire-icon" aria-hidden="true">✳</span> MANTÉN <kbd>CLIC</kbd> / <kbd>F</kbd> PARA DISPARAR</span>
+			<span class="mobile-aim"><span class="fire-icon" aria-hidden="true">✳</span> MANTÉN DISPARO PARA ATACAR</span>
+			<span class="credit">UNA SEÑAL. CINCO FASES. <strong>NINGUNA SALIDA.</strong></span>
+		</footer>
+	</main>
+</body>
+</html>
